@@ -12,7 +12,7 @@ export const config = (httpServer) => {
         // Envía la lista de productos al conectarse
         try {
             const products = await productManager.getAllProducts();
-            socket.emit("products-list", { products }); // 
+            socket.emit("products-list", { products });
         } catch (error) {
             socket.emit("error-message", { message: error.message });
         }

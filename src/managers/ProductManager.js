@@ -1,45 +1,77 @@
-import { writeJsonFile, readJsonFile } from "../utils/fileHandler.js";
-import paths from "../utils/paths.js";
-import { generateId } from "../utils/collectionHandler.js";
+import Product from "../models/Product.js";  // Asegúrate de importar el modelo de MongoDB
 
 class ProductManager {
-    constructor() {
-        this.productsFilePath = paths.files + "../files/product.json";
-    }
-
-    // Obtiene todos los productos
-    async getAllProducts() {
+    // Obtener todos los productos con paginación, ordenamiento y filtrado
+    async getAllProducts({ limit, page, sort, query }) {
         try {
-            const products = await readJsonFile(paths.files, "product.json");
-            return products;
+            // Filtrar productos por título (query)
+            const filter = query ? { title: { $regex: query, $options: "i" } } : {};
+
+            // Calcular el número de productos a saltar para la paginación
+            const skip = (page - 1) * limit;
+
+            // Obtener los productos con el filtro, ordenados por precio y con paginación
+            const products = await Product.find(filter)
+                .sort({ price: sort === "asc" ? 1 : -1 }) // Ordenar por precio (ascendente o descendente)
+                .skip(skip) // Saltar los productos ya mostrados
+                .limit(limit); // Limitar el número de productos por página
+
+            // Contar el total de productos que coinciden con el filtro
+            const totalProducts = await Product.countDocuments(filter);
+
+            // Calcular el total de páginas
+            const totalPages = Math.ceil(totalProducts / limit);
+
+            // Determinar si hay páginas previas o siguientes
+            const hasPrevPage = page > 1;
+            const hasNextPage = page < totalPages;
+
+            // Generar los enlaces para la paginación
+            const prevLink = hasPrevPage ? `/api/products?page=${page - 1}&limit=${limit}&sort=${sort}&query=${query}` : null;
+            const nextLink = hasNextPage ? `/api/products?page=${page + 1}&limit=${limit}&sort=${sort}&query=${query}` : null;
+
+            return {
+                products,
+                totalPages,
+                hasPrevPage,
+                hasNextPage,
+                prevLink,
+                nextLink,
+            };
         } catch (error) {
             throw new Error(`Error al obtener los productos: ${error.message}`);
         }
     }
 
-    // Agrega un nuevo producto
-    async addProduct(productData) {
+    // Obtener un producto por ID
+    async getOneById(id) {
         try {
-            const products = await readJsonFile(paths.files, "product.json");
-            const newProduct = { id: generateId(products), ...productData };
-            products.push(newProduct);
-            await writeJsonFile(paths.files, "product.json", products);
+            const product = await Product.findById(id);
+            return product;
+        } catch (error) {
+            throw new Error(`Error al obtener el producto: ${error.message}`);
+        }
+    }
+
+    // Agregar un nuevo producto
+    async addProduct(productData, file) {
+        try {
+            const newProduct = new Product(productData);
+            if (file) newProduct.image = file.path; // Guardamos la imagen si se sube
+            await newProduct.save();  // Guardar el nuevo producto en MongoDB
             return newProduct;
         } catch (error) {
             throw new Error(`Error al agregar el producto: ${error.message}`);
         }
     }
 
-    // Elimina un producto por ID
+    // Eliminar un producto por ID
     async deleteOneById(id) {
         try {
-            const products = await readJsonFile(paths.files, "product.json");
-            const productIndex = products.findIndex((product) => product.id === id);
-            if (productIndex === -1) {
+            const product = await Product.findByIdAndDelete(id);
+            if (!product) {
                 throw new Error(`Producto con ID ${id} no encontrado.`);
             }
-            products.splice(productIndex, 1);
-            await writeJsonFile(paths.files, "product.json", products);
         } catch (error) {
             throw new Error(`Error al eliminar el producto: ${error.message}`);
         }

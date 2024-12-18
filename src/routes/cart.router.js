@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {
 // Ruta para crear un nuevo carrito
 router.post("/", async (req, res) => {
     try {
-        const cart = await cartManager.create();
+        const cart = await cartManager.insertOne(req.body);
         res.status(201).json({ status: "success", payload: cart });
     } catch (error) {
         res.status(error.code || 500).json({ status: "error", message: error.message });

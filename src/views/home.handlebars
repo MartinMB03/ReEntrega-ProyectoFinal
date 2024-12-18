@@ -7,11 +7,24 @@
         <h3>Productos</h3>
         <div class="products">
             <div class="products__list">
-                <ul class="products__list__item" id="products-list"></ul>
+                <!-- Lista de productos que se renderiza con Handlebars -->
+                <ul class="products__list__item" id="products-list">
+                    {{#each products}}
+                    <li>
+                        <h4>{{this.title}}</h4>
+                        <p>{{this.description}}</p>
+                        <p>Precio: ${{this.price}}</p>
+                        <p>Stock: {{this.stock}}</p>
+                        <p>Código: {{this.code}}</p>
+                        <p>Categoría: {{this.category}}</p>
+                    </li>
+                    {{/each}}
+                </ul>
             </div>
             <button id="btn-refresh-products-list">Recargar Lista</button>
         </div>
     </section>
 </main>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="/api/public/js/products.js"></script>
