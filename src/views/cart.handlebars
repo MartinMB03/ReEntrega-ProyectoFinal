@@ -1,0 +1,26 @@
+<header>
+    <h1>Carrito de Compras</h1>
+</header>
+
+<main>
+    <section>
+        <h3>Productos en el carrito</h3>
+        <div class="cart-items">
+            {{#each cart.products}}
+            <div class="cart-item">
+                <h4>{{this.productId.title}}</h4>
+                <p>Cantidad: {{this.quantity}}</p>
+                <p>Precio: ${{this.productId.price}}</p>
+            </div>
+            {{/each}}
+        </div>
+
+        {{#if cart.products.length}}
+        <button id="checkout-btn">Finalizar compra</button>
+        {{else}}
+        <p>No hay productos en el carrito.</p>
+        {{/if}}
+    </section>
+</main>
+
+<script src="/api/public/js/cart.js"></script>

@@ -7,7 +7,6 @@
         <h3>Productos</h3>
         <div class="products">
             <div class="products__list">
-                <!-- Lista de productos que se renderiza con Handlebars -->
                 <ul class="products__list__item" id="products-list">
                     {{#each products}}
                     <li>
@@ -17,11 +16,22 @@
                         <p>Stock: {{this.stock}}</p>
                         <p>Código: {{this.code}}</p>
                         <p>Categoría: {{this.category}}</p>
+                        <a href="/products/{{this._id}}">Ver detalles</a>
+                        <button class="add-to-cart" data-product-id="{{this._id}}">Agregar al carrito</button>
                     </li>
                     {{/each}}
                 </ul>
             </div>
-            <button id="btn-refresh-products-list">Recargar Lista</button>
+        </div>
+
+        <div class="pagination">
+            {{#if hasPrevPage}}
+            <a href="/products?page={{prevPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Página anterior</a>
+            {{/if}}
+            <span>Página {{page}} de {{totalPages}}</span>
+            {{#if hasNextPage}}
+            <a href="/products?page={{nextPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Página siguiente</a>
+            {{/if}}
         </div>
     </section>
 </main>

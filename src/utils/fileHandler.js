@@ -1,13 +1,11 @@
 import fs from "fs";
 import path from "path";
 
-// Valida la ruta y nombre de un archivo
 const validateFilePathAndName = (filepath, filename) => {
     if (!filepath) throw new Error(`La ruta del archivo ${filename} no fue proporcionada.`);
     if (!filename) throw new Error(`El nombre del archivo ${filename} no fue proporcionado.`);
 };
 
-// Lee el contenido de un archivo JSON
 export const readJsonFile = async (filepath, filename) => {
     validateFilePathAndName(filepath, filename);
 
@@ -20,7 +18,6 @@ export const readJsonFile = async (filepath, filename) => {
     }
 };
 
-// Escribe contenido en un archivo JSON
 export const writeJsonFile = async (filepath, filename, content) => {
     validateFilePathAndName(filepath, filename);
 
@@ -34,7 +31,6 @@ export const writeJsonFile = async (filepath, filename, content) => {
     }
 };
 
-// Elimina un archivo
 export const deleteFile = async (filepath, filename) => {
     validateFilePathAndName(filepath, filename);
 

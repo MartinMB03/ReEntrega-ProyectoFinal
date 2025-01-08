@@ -3,7 +3,6 @@ import Product from "../models/Product.js";
 
 const router = Router();
 
-// Ruta para la página de inicio
 router.get("/", async (req, res) => {
     try {
         const products = await Product.find().limit(10);
@@ -14,10 +13,8 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Ruta para la página de productos en tiempo real
 router.get("/realTimeProducts", async (req, res) => {
     try {
-        // Obtener productos en tiempo real
         const products = await Product.find();
 
         res.render("realTimeProducts", { title: "Productos en Tiempo Real", products });

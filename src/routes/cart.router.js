@@ -4,7 +4,6 @@ import CartManager from "../managers/CartManager.js";
 const router = Router();
 const cartManager = new CartManager();
 
-// Ruta para obtener todos los carritos
 router.get("/", async (req, res) => {
     try {
         const carts = await cartManager.getAll();
@@ -14,17 +13,15 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Ruta para obtener un carrito por su ID
 router.get("/:id", async (req, res) => {
     try {
-        const cart = await cartManager.getOneById(req.params.id);
-        res.status(200).json({ status: "success", payload: cart });
+        const cart = await cartManager.getOneById(req.params.id).populate('products.productId');
+        res.render("cart", { cart });
     } catch (error) {
         res.status(error.code || 500).json({ status: "error", message: error.message });
     }
 });
 
-// Ruta para crear un nuevo carrito
 router.post("/", async (req, res) => {
     try {
         const cart = await cartManager.insertOne(req.body);
@@ -34,7 +31,6 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Ruta para agregar un producto al carrito
 router.post("/:cid/products/:pid", async (req, res) => {
     try {
         const { cid, pid } = req.params;
@@ -46,7 +42,6 @@ router.post("/:cid/products/:pid", async (req, res) => {
     }
 });
 
-// Ruta para eliminar un producto de un carrito
 router.delete("/:cid/products/:pid", async (req, res) => {
     try {
         const { cid, pid } = req.params;

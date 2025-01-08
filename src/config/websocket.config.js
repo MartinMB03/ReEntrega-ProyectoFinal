@@ -9,7 +9,6 @@ export const config = (httpServer) => {
     socketServer.on("connection", async (socket) => {
         console.log("Cliente conectado", socket.id);
 
-        // Envía la lista de productos al conectarse
         try {
             const products = await productManager.getAllProducts();
             socket.emit("products-list", { products });
@@ -17,7 +16,6 @@ export const config = (httpServer) => {
             socket.emit("error-message", { message: error.message });
         }
 
-        // Escucha el evento para agregar un nuevo producto
         socket.on("insert-product", async (data) => {
             try {
                 await productManager.addProduct(data);
@@ -28,7 +26,6 @@ export const config = (httpServer) => {
             }
         });
 
-        // Escucha el evento para eliminar un producto
         socket.on("delete-product", async (data) => {
             try {
                 await productManager.deleteOneById(data.id);
@@ -39,7 +36,6 @@ export const config = (httpServer) => {
             }
         });
 
-        // Desconexión del cliente
         socket.on("disconnect", () => {
             console.log("Cliente desconectado", socket.id);
         });
