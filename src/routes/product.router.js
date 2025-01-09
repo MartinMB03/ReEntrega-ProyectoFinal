@@ -2,7 +2,7 @@ import { Router } from "express";
 import ProductManager from "../managers/ProductManager.js";
 
 const router = Router();
-const productManager = new ProductManager();
+const manager = new ProductManager();
 
 router.get("/", async (req, res) => {
     try {
@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
         const limitNumber = parseInt(limit);
         const pageNumber = parseInt(page);
 
-        const result = await productManager.getAllProducts({
+        const result = await manager.getAllProducts({
             limit: limitNumber,
             page: pageNumber,
             sort,
@@ -19,7 +19,6 @@ router.get("/", async (req, res) => {
 
         const { products, totalPages, hasPrevPage, hasNextPage, prevLink, nextLink } = result;
 
-        // Convertir los productos a objetos planos
         const plainProducts = products.map(product => product.toObject());
 
         res.render("home", {
@@ -41,13 +40,12 @@ router.get("/", async (req, res) => {
     }
 });
 
-
-router.get("/:pid", async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
-        const product = await productManager.getOneById(req.params.pid);
-        res.render("productDetails", { product });
+        const product = await manager.getOneById(req.params.id);
+        res.status(200).json({ status: "success", payload: product });
     } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+        res.status(error.code).json({ status: "error", message: error.message });
     }
 });
 

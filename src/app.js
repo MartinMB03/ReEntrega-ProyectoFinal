@@ -8,7 +8,6 @@ import routerViewHome from "./routes/home.view.router.js";
 const app = express();
 const PORT = 8080;
 
-// Configurar Handlebars
 app.engine('handlebars', engine({
     runtimeOptions: {
         allowProtoPropertiesByDefault: true,
@@ -16,22 +15,19 @@ app.engine('handlebars', engine({
     }
 }));
 
-// Configuración del directorio de vistas
-app.set('views', './src/views');  // Asegúrate de que esta ruta esté bien configurada
+app.set('views', './src/views');
 
-app.set('view engine', 'handlebars'); // Establecer el motor de plantillas
+app.set('view engine', 'handlebars');
 
 app.use("/api/public", express.static("./src/public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use("/api/products", productRouter); // Rutas para productos
-app.use("/api/carts", cartRouter); // Rutas para carritos
-app.use("/", routerViewHome); // Rutas para las vistas
-
+app.use("/api/products", productRouter);
+app.use("/api/carts", cartRouter);
+app.use("/", routerViewHome);
 connectDB();
 
-// Iniciar el servidor HTTP
 const httpServer = app.listen(PORT, () => {
     console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });
