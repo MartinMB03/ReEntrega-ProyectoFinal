@@ -110,7 +110,19 @@ class CartManager {
             throw new Error(`Error al vaciar el carrito: ${error.message}`);
         }
     }
-
+    async updateProducts(cartId, products){
+        try {
+            const cart = await Cart.findById(cartId);
+            if (!cart) {
+                throw new Error(`Carrito con ID ${cartId} no encontrado.`);
+            }
+            cart.products = products
+            await cart.save();
+            return cart;
+        } catch (error) {
+            throw new Error(`Error al actualizar los productos: ${error.message}`);
+        }   
+    }
     async updateProductQuantity(cartId, productId, quantity) {
         try {
             const cart = await Cart.findById(cartId);

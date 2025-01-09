@@ -2,15 +2,14 @@ import { Router } from "express";
 import ProductManager from "../managers/ProductManager.js";
 
 const router = Router();
-const manager = new ProductManager();
+const productManager = new ProductManager();
 
 router.get("/", async (req, res) => {
     try {
         const { limit = 10, page = 1, sort = "asc", query = "" } = req.query;
         const limitNumber = parseInt(limit);
         const pageNumber = parseInt(page);
-
-        const result = await manager.getAllProducts({
+        const result = await productManager.getAllProducts({
             limit: limitNumber,
             page: pageNumber,
             sort,
@@ -19,9 +18,9 @@ router.get("/", async (req, res) => {
 
         const { products, totalPages, hasPrevPage, hasNextPage, prevLink, nextLink } = result;
 
+        // Convertir los productos a objetos planos
         const plainProducts = products.map(product => product.toObject());
-
-        res.render("home", {
+        res.json({
             products: plainProducts,
             totalPages,
             hasPrevPage,
@@ -34,18 +33,19 @@ router.get("/", async (req, res) => {
             limit: limitNumber,
             sort,
             query
-        });
+        })
     } catch (error) {
         res.status(500).json({ status: "error", message: error.message });
     }
 });
 
-router.get("/:id", async (req, res) => {
+
+router.get("/:pid", async (req, res) => {
     try {
-        const product = await manager.getOneById(req.params.id);
-        res.status(200).json({ status: "success", payload: product });
+        const product = await productManager.getOneById(req.params.pid);
+        res.render("productDetails", { product });
     } catch (error) {
-        res.status(error.code).json({ status: "error", message: error.message });
+        res.status(500).json({ status: "error", message: error.message });
     }
 });
 

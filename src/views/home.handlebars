@@ -13,8 +13,10 @@
                         <h4>{{this.title}}</h4>
                         <p>{{this.description}}</p>
                         <p>Precio: ${{this.price}}</p>
+                        <p>Stock: {{this.stock}}</p>
+                        <p>Código: {{this.code}}</p>
                         <p>Categoría: {{this.category}}</p>
-                        <a href="/api/products/{{this._id}}" class="button">Ver detalles</a>
+                        <a href="/api/products/{{this._id}}">Ver detalles</a>
                         <button class="add-to-cart" data-product-id="{{this._id}}">Agregar al carrito</button>
                     </li>
                     {{/each}}
@@ -32,12 +34,6 @@
             {{/if}}
         </div>
     </section>
-        <section>
-        <h3>Carrito de Compras</h3>
-        <input type="text" id="cart-id" value="{{cart._id}}" readonly>
-        <a href="/api/carts/{{cart._id}}"><button title="Ver carrito...">👁</button></a>
-    </section>
-
 </main>
 
 <script src="/socket.io/socket.io.js"></script>
